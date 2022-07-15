@@ -19,7 +19,7 @@ forvalues yy = 2004/2006 {
 	tabmiss ethnicity
 	qui clean_ethnicity 
 	keep year conglome vivienda hogar ethnicity	
-    save "Trash/tmp_`yy'.dta", replace
+    save "$ccc_root/Trash/tmp_`yy'.dta", replace
 	} 
 
 forvalues yy = 2007/2011 {
@@ -28,7 +28,7 @@ forvalues yy = 2007/2011 {
 	rename p46 ethnicity
 	clean_ethnicity
 	keep year conglome vivienda hogar ethnicity	
-	save "Trash/tmp_`yy'.dta", replace
+	save "$ccc_root/Trash/tmp_`yy'.dta", replace
 	}
 	
 forvalues yy = 2012/2017 {
@@ -38,7 +38,7 @@ forvalues yy = 2012/2017 {
 	rename p558c ethnicity
 	clean_ethnicity
 	keep year conglome vivienda hogar ethnicity	
-	save "Trash/tmp_`yy'.dta", replace
+	save "$ccc_root/Trash/tmp_`yy'.dta", replace
 	}
 
 *-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  
@@ -47,11 +47,11 @@ forvalues yy = 2012/2017 {
 	
 clear
 forvalues yy = 2004/2017 {
-    append using "Trash/tmp_`yy'.dta"
+    append using "$ccc_root/Trash/tmp_`yy'.dta"
 	}
 
 foreach var in conglome vivienda hogar {
     destring `var', force replace //manually verified that non-numeric data points are irrelevant 
 	}
-save "Trash/data_ethnicity.dta", replace
+save "$ccc_root/Trash/data_ethnicity.dta", replace
 

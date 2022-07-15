@@ -3,7 +3,7 @@
 *-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  
 local raw_tokeep p101 p102 p103 p104 p105a p105b d105b i105b p106 d106 i106      
 local key_vars   conglome vivienda hogar
-forvalues yy = 1997/2018 {
+forvalues yy = $starting_year/$ending_year {
     di "year `yy'"
 	di " "
 	*Renames based on survey's official documentation
@@ -110,19 +110,21 @@ forvalues yy = 1997/2018 {
 	sort year `key_vars'
 	
 	keep `key_vars' date town_size ubigeo dominio urban year electricity phone result sewage water `raw_tokeep'
-	save "Trash/tmp_`yy'.dta", replace
+	save "$ccc_root/Trash/tmp_`yy'.dta", replace
 	}
 
 *-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  
 *2. Append
 *-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  	
 clear
-forvalues yy=1997/2018{
-	append using "Trash/tmp_`yy'.dta"
+
+
+forvalues yy=$starting_year/$ending_year{
+	append using "$ccc_root/Trash/tmp_`yy'.dta"
 	}
 compress	
-forvalues yy=1997/2018{
-	erase "Trash/tmp_`yy'.dta"
+forvalues yy=$starting_year/$ending_year{
+	erase "$ccc_root/Trash/tmp_`yy'.dta"
 	}
 
 *-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  
@@ -189,4 +191,4 @@ recode p106  9999 = .
 recode p105b 9999 = .
 recode d105b 9999 = .
 
-save "Trash/data_100.dta", replace
+save "$ccc_root/Trash/data_100.dta", replace

@@ -2,11 +2,11 @@
 *1. Clean
 *-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  
 local key_vars conglome vivienda hogar	
-forvalues yy = 1997/2018 {
+forvalues yy = $starting_year/$ending_year {
 	*Renames based on survey's official documentation (translating names using .doc files for 1997-1998)	
 	if `yy' == 1997 {
 	    local use_vars_97 con viv hog p300n niveduca anoaprob leeescri
-	    use `use_vars_97' using "Enaho/in/Raw Data/module 03/`yy'/`yy'.dta", clear
+	    use `use_vars_97' using "$ccc_in/module 03/`yy'/`yy'.dta", clear
 	    rename con   conglome
 		rename viv   vivienda
 		rename hog   hogar
@@ -21,7 +21,7 @@ forvalues yy = 1997/2018 {
 	
 	else { 
 	    local use_vars `key_vars' codperso p301a p301b p301c p302
-	    use `use_vars'  using "Enaho/in/Raw Data/module 03/`yy'/`yy'.dta", clear	
+	    use `use_vars'  using "$ccc_in/module 03/`yy'/`yy'.dta", clear	
 		}
 	gen year=`yy'
 	
@@ -92,20 +92,20 @@ forvalues yy = 1997/2018 {
 
 	keep year `key_vars' codperso educ g_educ elite
 	
-	save "Trash/tmp_`yy'.dta", replace
+	save "$ccc_root/Trash/tmp_`yy'.dta", replace
 	}
 
 *-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  
 *2. Append
 *-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  
 clear
-forvalues yy=1997/2018{
-	append using "Trash/tmp_`yy'.dta"
+forvalues yy = $starting_year/$ending_year {
+	append using "$ccc_root/Trash/tmp_`yy'.dta"
     }
 keep if !missing(codperso)
 compress
-forvalues yy=1997/2018{
-	erase "Trash/tmp_`yy'.dta"
+forvalues yy = $starting_year/$ending_year {
+	erase "$ccc_root/Trash/tmp_`yy'.dta"
     }
 
 *-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  
@@ -113,4 +113,4 @@ forvalues yy=1997/2018{
 *-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  
 label var educ   "Years of education"
 label var g_educ "Educational group"
-save "Trash/data_300.dta", replace
+save "$ccc_root/Trash/data_300.dta", replace

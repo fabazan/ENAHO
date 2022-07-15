@@ -2,11 +2,11 @@
 *1. Clean
 *-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  
 local key_vars conglome vivienda hogar
-forvalues yy = 1997/2018{
+forvalues yy = $starting_year/$ending_year{
 	*Renames based on survey's official documentation (translating names using .doc files for 1997-1998)	
 	if `yy' == 1997 {
 	    local use_vars_97 s2con s2viv s2hog codperso edad edadtiem parentes miembro sexo
-	    use `use_vars_97' using "Enaho/in/Raw Data/module 02/`yy'/`yy'.dta", clear
+	    use `use_vars_97' using "$ccc_in/module 02/`yy'/`yy'.dta", clear
 		
 	    rename s2con conglome
 		rename s2viv vivienda
@@ -20,7 +20,7 @@ forvalues yy = 1997/2018{
 		}
 	else {
 	    local use_vars `key_vars' codperso p203 p204 p207 p208* ubigeo 
-	    use `use_vars' using "Enaho/in/Raw Data/module 02/`yy'/`yy'.dta", clear
+	    use `use_vars' using "$ccc_in/module 02/`yy'/`yy'.dta", clear
 		}
 	gen year=`yy'
 	
@@ -44,8 +44,8 @@ forvalues yy = 1997/2018{
 
 	
 	rename  p208a  age
-		
-	if `yy' == 2018 {
+	
+	if `yy' >= 2018 {
 	    gen born_here   = .
 		gen born_ubigeo = .
 		}
@@ -79,19 +79,19 @@ forvalues yy = 1997/2018{
 	replace born_ubigeo=. if born_ubigeo<10101 | born_ubigeo==806001 | born_ubigeo== 999999
 	
 	keep year year_born `key_vars' codperso age born_here born_ubigeo isfemale place g_age g_cohort
-	save "Trash/tmp_`yy'.dta", replace
+	save "$ccc_root/Trash/tmp_`yy'.dta", replace
 	}
 *-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  
 *2. Append
 *-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  
 clear
-forvalues yy = 1997/2018 {
-	append using "Trash/tmp_`yy'.dta"
+forvalues yy = $starting_year/$ending_year {
+	append using "$ccc_root/Trash/tmp_`yy'.dta"
     }
 keep if !missing(codperso)
 compress	
-forvalues yy = 1997/2018 {
-	erase "Trash/tmp_`yy'.dta"
+forvalues yy = $starting_year/$ending_year {
+	erase "$ccc_root/Trash/tmp_`yy'.dta"
     }
 
 *-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  
@@ -102,4 +102,4 @@ label var age         "Age in years"
 label var born_ubigeo "District where born"
 
 
-save "Trash/data_200.dta", replace
+save "$ccc_root/Trash/data_200.dta", replace

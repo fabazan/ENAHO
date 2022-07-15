@@ -1,6 +1,6 @@
-use "Trash/data_sumaria.dta", clear
-merge 1:1 year conglome vivienda hogar using "Trash/data_100.dta", nogen
-merge 1:1 year conglome vivienda hogar using "Trash/data_ethnicity.dta", nogen
+use "$ccc_root/Trash/data_sumaria.dta", clear
+merge 1:1 year conglome vivienda hogar using "$ccc_root/Trash/data_100.dta", nogen
+merge 1:1 year conglome vivienda hogar using "$ccc_root/Trash/data_ethnicity.dta", nogen
 
-save "Trash/data_house.dta", replace
+save "$ccc_root/Trash/data_house.dta", replace
 
